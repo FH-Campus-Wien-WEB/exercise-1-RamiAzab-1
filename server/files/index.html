@@ -6,29 +6,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies!</title>
     <style>
-        /* Part 3: Your styling goes here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        article {
+            background-color: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        img {
+            max-width: 200px;
+            border-radius: 8px;
+        }
+
+        .genre {
+            background-color: #007BFF;
+            color: white;
+            padding: 4px 8px;
+            margin-right: 5px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .actors, .directors {
+            font-style: italic;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
     </style>
     <script>
-        function reverseString(s) {
-            return s.split("").reverse().join("");
-        }
-
         window.onload = function () {
-            const xhr = new XMLHttpRequest()
+            const xhr = new XMLHttpRequest();
             xhr.onload = function () {
-                const bodyElement = document.querySelector("body")
+                const bodyElement = document.querySelector("body");
                 if (xhr.status == 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */ 
-                    bodyElement.append(reverseString(xhr.responseText))
-                } else {
-                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
-                }
-            }
-            xhr.open("GET", "/movies")
-            xhr.send()
-        }
-    </script>
+                    const movies = JSON.parse(xhr.responseText);
 
+                    movies.forEach(movie => {
+                        const article = document.createElement("article");
+
+                        const title = document.createElement("h2");
+                        title.textContent = movie.Title;
+
+                        const img = document.createElement("img");
+                        img.src = movie.Poster;
+
+                        const plot = document.createElement("p");
+                        plot.textContent = movie.Plot;
+
+                        const info = document.createElement("p");
+                        info.textContent = "Released: " + movie.Released + " | Runtime: " + movie.Runtime + " min | Rating: " + movie.imdbRating;
+
+                        const genres = document.createElement("div");
+                        movie.Genres.forEach(g => {
+                            const span = document.createElement("span");
+                            span.textContent = g;
+                            span.classList.add("genre");
+                            genres.appendChild(span);
+                        });
+
+                        const actors = document.createElement("p");
+                        actors.textContent = "Actors: " + movie.Actors.join(", ");
+                        actors.classList.add("actors");
+
+                        const directors = document.createElement("p");
+                        directors.textContent = "Directors: " + movie.Directors.join(", ");
+                        directors.classList.add("directors");
+
+                        // Beispielbutton, der klickbar ist
+                        const btn = document.createElement("button");
+                        btn.textContent = "Click me!";
+                        btn.onclick = () => alert("You clicked on " + movie.Title);
+
+                        article.appendChild(title);
+                        article.appendChild(img);
+                        article.appendChild(plot);
+                        article.appendChild(info);
+                        article.appendChild(genres);
+                        article.appendChild(actors);
+                        article.appendChild(directors);
+                        article.appendChild(btn);
+
+                        bodyElement.appendChild(article);
+                    });
+
+                } else {
+                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText);
+                }
+            };
+            xhr.open("GET", "/movies");
+            xhr.send();
+        };
+    </script>
 </head>
 
 <body>
