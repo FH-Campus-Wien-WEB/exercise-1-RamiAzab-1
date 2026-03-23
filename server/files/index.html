@@ -8,21 +8,41 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #121214;
             padding: 20px;
         }
 
         article {
-            background-color: white;
+            background-color: #5650E0;
             border-radius: 10px;
             margin-bottom: 20px;
             padding: 15px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        /* Hover-Effekt für die Box */
+        article:hover {
+            background-color: #6C63FF;
+            transform: translateY(-5px);
+        }
+
+        /* Flexbox für Bild + Text nebeneinander */
+        .movie-content {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
         }
 
         img {
             max-width: 200px;
             border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .movie-text {
+            display: flex;
+            flex-direction: column;
         }
 
         .genre {
@@ -34,17 +54,34 @@
             display: inline-block;
         }
 
-        .actors, .directors {
+        .actors,
+        .directors {
             font-style: italic;
             margin-top: 5px;
             margin-bottom: 5px;
         }
 
         button {
+            width: 220px;          /* feste Breite für alle Buttons */
+            height: 55px;          /* feste Höhe */
             margin-top: 10px;
-            padding: 5px 10px;
+            font-size: 0.9rem;
             cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #FFB800;
+            color: #121214;
+            transition: background-color 0.2s, transform 0.2s;
+            text-align: center;    /* Text zentrieren */
+            flex-shrink: 0;        /* Verhindert, dass Button kleiner wird */
         }
+
+        /* Hover-Effekt für Button */
+        button:hover {
+            background-color: #FFA500;
+            transform: scale(1.05);
+        }
+
     </style>
     <script>
         window.onload = function () {
@@ -57,18 +94,31 @@
                     movies.forEach(movie => {
                         const article = document.createElement("article");
 
+                        // Titel
                         const title = document.createElement("h2");
                         title.textContent = movie.Title;
 
+                        // Container für Bild + Text
+                        const contentDiv = document.createElement("div");
+                        contentDiv.classList.add("movie-content");
+
+                        // Bild
                         const img = document.createElement("img");
                         img.src = movie.Poster;
 
+                        // Textcontainer
+                        const textDiv = document.createElement("div");
+                        textDiv.classList.add("movie-text");
+
+                        // Plot
                         const plot = document.createElement("p");
                         plot.textContent = movie.Plot;
 
+                        // Infos
                         const info = document.createElement("p");
                         info.textContent = "Released: " + movie.Released + " | Runtime: " + movie.Runtime + " min | Rating: " + movie.imdbRating;
 
+                        // Genres
                         const genres = document.createElement("div");
                         movie.Genres.forEach(g => {
                             const span = document.createElement("span");
@@ -77,28 +127,38 @@
                             genres.appendChild(span);
                         });
 
+                        // Actors
                         const actors = document.createElement("p");
                         actors.textContent = "Actors: " + movie.Actors.join(", ");
                         actors.classList.add("actors");
 
+                        // Directors
                         const directors = document.createElement("p");
                         directors.textContent = "Directors: " + movie.Directors.join(", ");
                         directors.classList.add("directors");
 
-                        // Beispielbutton, der klickbar ist
+                        // Button
                         const btn = document.createElement("button");
                         btn.textContent = "Click me!";
                         btn.onclick = () => alert("You clicked on " + movie.Title);
 
-                        article.appendChild(title);
-                        article.appendChild(img);
-                        article.appendChild(plot);
-                        article.appendChild(info);
-                        article.appendChild(genres);
-                        article.appendChild(actors);
-                        article.appendChild(directors);
-                        article.appendChild(btn);
+                        // Alles in den Textcontainer
+                        textDiv.appendChild(plot);
+                        textDiv.appendChild(info);
+                        textDiv.appendChild(genres);
+                        textDiv.appendChild(actors);
+                        textDiv.appendChild(directors);
+                        textDiv.appendChild(btn);
 
+                        // Bild + Text in ContentDiv
+                        contentDiv.appendChild(img);
+                        contentDiv.appendChild(textDiv);
+
+                        // Titel + ContentDiv ins Article
+                        article.appendChild(title);
+                        article.appendChild(contentDiv);
+
+                        // Article an Body anhängen
                         bodyElement.appendChild(article);
                     });
 
